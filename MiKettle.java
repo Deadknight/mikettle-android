@@ -67,6 +67,15 @@ public class MiKettle
     public static final String MI_KW_TYPE = "keep warm type";
     public static final String MI_KW_TIME = "keep warm time";
 
+    public static final ArrayList<String> actions = new ArrayList<String>()
+    {{
+        add(MI_ACTION);
+        add(MI_MODE);
+        add(MI_SET_TEMPERATURE);
+        add(MI_KW_TYPE);
+        add(MI_KW_TIME);
+    }};
+
     HashMap<Byte, String> MI_ACTION_MAP = new HashMap<Byte, String>()
     {{
         put((byte) 0, "idle");
@@ -177,7 +186,7 @@ public class MiKettle
     private void connect(final IOnComplete<Void> onServiceComplete)
     {
         device = bluetoothAdapter.getRemoteDevice(_mac);
-        gatt = device.connectGatt(ctx, false, new BluetoothGattCallback()
+        gatt = device.connectGatt(ctx, true, new BluetoothGattCallback()
         {
             @Override
             public void onPhyUpdate(BluetoothGatt gatt, int txPhy, int rxPhy, int status)
@@ -201,6 +210,11 @@ public class MiKettle
                     discovered = true;
                     //Log.d("asd", "discover services");
                     gatt.discoverServices();
+                }
+                else if(newState == 0)
+                {
+                    discovered = false;
+                    state = 0;
                 }
             }
 
@@ -500,11 +514,11 @@ public class MiKettle
         return result;
     }
 
+
     //00000010-0000-1000-8000-00805f9b34fb
     private static boolean checkUUID(String uuid, String smallVal)
     {
-        if(uuid == null || uuid.isEmpty() || smallVal == null || smallVal.isEmpty())
-        {
+        if(uuid == null || uuid.isEmpty() || smallVal == null || smallVal.isEmpty()){
             //// TODO: 29.07.2020 return some err
             return false;
         }
@@ -512,6 +526,7 @@ public class MiKettle
         String substr = uuid.substring(4, 8);
 
         return smallVal.equalsIgnoreCase(substr);
+
     }
 
     private void authd()
