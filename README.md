@@ -1,4 +1,6 @@
-# mikettle-java
+# mikettle-android
+
+Mi kettle (mikettle) android library
 
 Based on https://github.com/aprosvetova/xiaomi-kettle and https://github.com/drndos/mikettle
 
